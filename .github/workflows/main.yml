@@ -1,0 +1,33 @@
+name: PR Summary by OpenCode
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  summarize:
+    runs-on: self-hosted
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up jq (JSON processor)
+        run: |
+          if ! command -v jq &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+
+      - name: Run OpenCode summarize
+        run: |
+          SUMMARY=$(opencode summarize . --json | jq -r '.summary')
+          echo "$SUMMARY" > summary.txt
+
+      - name: Post summary as PR comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: summary.txt
