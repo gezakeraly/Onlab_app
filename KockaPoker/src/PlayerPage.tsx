@@ -11,19 +11,24 @@ const PlayerPage: React.FC = () => {
   const [round, setRound] = useState<number>(1);
 
   useEffect(() => {
-    const playerNames = JSON.parse(localStorage.getItem('playerNames') || '[]');
-    setPlayerName(playerNames[parseInt(playerIndex || '0', 10)]);
-
-    const playerScores = JSON.parse(localStorage.getItem('playerScores') || '{}');
-    if (playerScores[playerNames[parseInt(playerIndex || '0', 10)]]) {
-      setScores(playerScores[playerNames[parseInt(playerIndex || '0', 10)]]);
+    try {
+      const playerNames = JSON.parse(localStorage.getItem('playerNames') || '[]');
+      setPlayerName(playerNames[parseInt(playerIndex || '0', 10)] || 'Ismeretlen játékos');
+  
+      const playerScores = JSON.parse(localStorage.getItem('playerScores') || '{}');
+      if (playerScores[playerNames[parseInt(playerIndex || '0', 10)]]) {
+        setScores(playerScores[playerNames[parseInt(playerIndex || '0', 10)]] || Array(15).fill(''));
+      }
+    } catch (error) {
+      console.error('Hiba a localStorage adatainak betöltésekor:', error);
     }
   }, [playerIndex]);
 
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newScores = [...scores];
-    const { value } = event.target as HTMLInputElement | HTMLTextAreaElement;
-    newScores[index] = value === '' ? '' : parseInt(value, 10);
+    const { value } = event.target;
+    const parsedValue = parseInt(value, 10);
+    newScores[index] = value === '' || parsedValue < 0 ? '' : parsedValue;
     setScores(newScores);
   };
 

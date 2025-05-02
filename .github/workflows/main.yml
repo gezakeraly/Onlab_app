@@ -5,24 +5,16 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  summarize:
+  summarize-pr:
     runs-on: self-hosted
-
+    if: github.event_name == 'pull_request'
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up jq (JSON processor)
+      - name: Generate summary with OpenCode
         run: |
-          if ! command -v jq &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y jq
-          fi
-
-      - name: Run OpenCode summarize
-        run: |
-          SUMMARY=$(opencode summarize . --json | jq -r '.summary')
+          SUMMARY=$(opencode summarize .)
           echo "$SUMMARY" > summary.txt
 
       - name: Post summary as PR comment
@@ -31,3 +23,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body-path: summary.txt
+
