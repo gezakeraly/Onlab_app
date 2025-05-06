@@ -7,20 +7,40 @@ on:
 jobs:
   summarize-pr:
     runs-on: self-hosted
-    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+      
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout PR code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
 
-      - name: Generate summary with OpenCode
-        run: |
-          SUMMARY=$(opencode summarize .)
-          echo "$SUMMARY" > summary.txt
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v42
+      with:
+        since_last_remote_commit: true
 
-      - name: Post summary as PR comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body-path: summary.txt
+    - name: Generate summary with OpenCode
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git diff origin/main...HEAD > pr_diff.txt
 
+        SUMMARY=$(opencode summarize \
+          --diff pr_diff.txt \
+          --repo "." \
+          --prompt "Generate detailed PR summary in Hungarian focusing on: {{diff}}")
+
+        echo "$SUMMARY" > summary.txt
+
+    - name: Post summary as PR comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body-file: summary.txt
+        edit-mode: replace
