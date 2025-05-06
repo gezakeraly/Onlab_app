@@ -24,14 +24,6 @@ jobs:
       with:
         since_last_remote_commit: true
 
-<<<<<<< Updated upstream
-      - name: Post summary as PR comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body-path: summary.txt
-=======
     - name: Generate summary with OpenCode
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,4 +44,3 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         body-file: summary.txt
         edit-mode: replace
->>>>>>> Stashed changes
