@@ -1,19 +1,29 @@
+name: summarize-pr
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
 jobs:
-  summarize-pr:
+  summarize:
     runs-on: self-hosted
-    if: github.event_name == 'pull_request'
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout PR branch
+      uses: actions/checkout@v4
 
-      - name: Generate summary with OpenCode
-        run: |
-          SUMMARY=$(opencode summarize .)
-          echo "$SUMMARY" > summary.txt
+    - name: Install Aider dependencies
+      run: |
+        pip install aider-chat
 
-      - name: Post summary as PR comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body-path: summary.txt
+    - name: Generate summary with Aider
+      run: |
+        echo "Generating summary..."
+        aider --dry-run summarize > summary.txt
+
+    - name: Post summary as PR comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body-path: summary.txt
