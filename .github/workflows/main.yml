@@ -36,6 +36,7 @@ jobs:
       - name: Generate summary with Aider
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AIDER_MODEL: gpt-3.5-turbo
         run: |
           aider --input final_prompt.txt --no-gitignore > summary.txt
 
