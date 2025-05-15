@@ -37,7 +37,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          aider --input final_prompt.txt > summary.txt
+          aider --input final_prompt.txt --no-gitignore > summary.txt
 
       - name: Post summary as PR comment
         uses: peter-evans/create-or-update-comment@v4
