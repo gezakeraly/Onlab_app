@@ -17,6 +17,10 @@ const Final: React.FC = () => {
     navigate('/home');
   };
 
+  const handleCongratulations = () => {
+    navigate('/congratulations');
+  };
+
   return (
     <Container className="container">
       <Typography variant="h4" gutterBottom>
@@ -53,17 +57,14 @@ const Final: React.FC = () => {
       <Button variant="contained" color="primary" onClick={handleNewGame} className="new-game-button">
         New Game
       </Button>
-<<<<<<< Updated upstream
-=======
       <Button
         variant="contained"
         color="secondary"
-        onClick={() => alert('GRATULÁLOK!')}
+        onClick={handleCongratulations}
         className="congratulations-button"
       >
         Gratulálok
       </Button>
->>>>>>> Stashed changes
     </Container>
   );
 };

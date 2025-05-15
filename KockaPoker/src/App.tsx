@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Home from './Home';
 import PlayerPage from './PlayerPage';
 import Final from './Final';
+import Congratulations from './Congratulations'; // Új import
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/player/:playerIndex" element={<PlayerPage />} />
         <Route path="/final" element={<Final />} />
+        <Route path="/congratulations" element={<Congratulations />} /> {/* Új útvonal */}
       </Routes>
     </Router>
   );
