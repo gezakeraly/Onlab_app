@@ -34,11 +34,9 @@ jobs:
           echo "${PROMPT//\{\{diff\}\}/$DIFF}" > final_prompt.txt
 
       - name: Generate summary with Aider
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          AIDER_MODEL: gpt-3.5-turbo
         run: |
-          aider summarize --input final_prompt.txt --no-gitignore > summary.txt
+          aider --model gemini-exp
+          aider --message final_prompt.txt --no-gitignore > summary.txt
 
       - name: Post summary as PR comment
         uses: peter-evans/create-or-update-comment@v4
