@@ -53,17 +53,6 @@ const Final: React.FC = () => {
       <Button variant="contained" color="primary" onClick={handleNewGame} className="new-game-button">
         New Game
       </Button>
-<<<<<<< Updated upstream
-=======
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => alert('GRATULÁLOK!')}
-        className="congratulations-button"
-      >
-        Gratulálok
-      </Button>
->>>>>>> Stashed changes
     </Container>
   );
 };
