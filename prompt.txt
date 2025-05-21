@@ -1,13 +1,8 @@
 Kérlek, készíts egy részletes Pull Request összefoglalót a summary.txt fájlba az alábbi kódbeli változások alapján.
 
-A cél, hogy a csapat gyorsan átlássa:
 - milyen fájlok módosultak,
-- milyen funkcionális változások történtek (pl. új metódus, új validáció),
-- volt-e refaktorálás, vagy törlés,
-- van-e potenciális hatása más modulokra,
-- van-e biztonsági vagy teljesítménybeli jelentősége.
-
-Az összefoglaló végén egy tételes listában foglald össze a módosult fájlokat és főbb változásaikat.
+- milyen funkcionális változások történtek
+- milyen fejlesztési, javítási javaslataid vannak
 
 Változások:
 {{diff}}
