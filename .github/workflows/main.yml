@@ -1,58 +1,48 @@
-name: aider-from-issue
+name: summarize-pr
 
 on:
-  issues:
-    types: [opened, edited]
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
-  respond-to-issue:
+  summarize-pr:
     runs-on: self-hosted
-    if: github.event.issue.state == 'open'
 
     permissions:
-      contents: write
-      issues: write
+      contents: read
+      pull-requests: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Python & Aider
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
       - name: Install Aider
-        run: pip install aider-chat
-
-      - name: Extract issue description as message
         run: |
-          echo "${{ github.event.issue.body }}" > message.txt
+          pip install aider-chat
 
-      - name: Run Aider to edit files
+      - name: Generate PR diff
+        run: |
+          git fetch origin main
+          git diff origin/main...HEAD > diff.txt
+
+      - name: Combine prompt and diff
+        run: |
+          PROMPT=$(cat prompt.txt)
+          DIFF=$(cat diff.txt | sed 's/"/\\"/g')
+          echo "${PROMPT//\{\{diff\}\}/$DIFF}" > final_prompt.txt
+
+      - name: Generate summary with Aider
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AIDER_MODEL: gpt-3.5-turbo
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          aider --message-file message.txt --yes
+          aider --no-gitignore --message-file final_prompt.txt
 
-      - name: Commit & push changes
-        run: |
-          git add .
-          git commit -m "🔧 Aider válasz az issue alapján: #${{ github.event.issue.number }}"
-          git push origin HEAD
-
-      - name: Comment on the issue (optional)
+      - name: Post summary as PR comment
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            ✅ Aider feldolgozta az alábbi promptot, és commitolta a változásokat:
-            ```
-            ${{ github.event.issue.body }}
-            ```
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: summary.txt
