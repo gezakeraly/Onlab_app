@@ -1,5 +1,13 @@
-/ask In your answer, write a summary of the following changes in 5 sentences.
+Kérlek, készíts egy részletes Pull Request összefoglalót a summary.txt fájlba az alábbi kódbeli változások alapján.
 
-Changes:
+A cél, hogy a csapat gyorsan átlássa:
+- milyen fájlok módosultak,
+- milyen funkcionális változások történtek (pl. új metódus, új validáció),
+- volt-e refaktorálás, vagy törlés,
+- van-e potenciális hatása más modulokra,
+- van-e biztonsági vagy teljesítménybeli jelentősége.
+
+Az összefoglaló végén egy tételes listában foglald össze a módosult fájlokat és főbb változásaikat.
+
+Változások:
 {{diff}}
-

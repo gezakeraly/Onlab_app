@@ -38,7 +38,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AIDER_MODEL: gpt-3.5-turbo
         run: |
-          aider --no-gitignore --message-file final_prompt.txt > summary.txt
+          aider --no-gitignore --message-file final_prompt.txt
 
       - name: Post summary as PR comment
         uses: peter-evans/create-or-update-comment@v4
