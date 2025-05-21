@@ -1,1 +1,1 @@
-Delete the Gratulalok button from the Final.tsx.
+Addj hozzá egy gombot a Final.tsx oldalhoz. A gomb felirata: GRATULA! Hozz létre Gratula.tsx és Gratula.less fájlokat, itt a GRATULA! felirat jelenjen meg nagyban arany alapon fekete betűkkel. Ez az oldal nyíljon meg a Final.tsx GRATULA! gombjára kattintva.
