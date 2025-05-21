@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Home from './Home';
 import PlayerPage from './PlayerPage';
 import Final from './Final';
-import Congratulations from './Congratulations'; // Új import
+import Congratulations from './Congratulations'; // Új import valami
 
 const App: React.FC = () => {
   return (
