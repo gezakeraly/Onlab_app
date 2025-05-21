@@ -1,0 +1,1 @@
+Delete the Gratulalok button from the Final.tsx.
