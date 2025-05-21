@@ -1,48 +1,39 @@
-name: summarize-pr
+name: aider-from-issue
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  issues:
+    types: [opened, edited]
 
 jobs:
-  summarize-pr:
+  respond-to-issue:
     runs-on: self-hosted
+    if: github.event.issue.state == 'open'
 
     permissions:
-      contents: read
-      pull-requests: write
+      contents: write
+      issues: write
 
     steps:
-      - name: Checkout PR branch
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Set up Python & Aider
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Install Aider
-        run: |
-          pip install aider-chat
+        run: pip install aider-chat
 
-      - name: Generate PR diff
+      - name: Extract issue description as message
         run: |
-          git fetch origin main
-          git diff origin/main...HEAD > diff.txt
+          echo "${{ github.event.issue.body }}" > message.txt
 
-      - name: Combine prompt and diff
-        run: |
-          PROMPT=$(cat prompt.txt)
-          DIFF=$(cat diff.txt | sed 's/"/\\"/g')
-          echo "${PROMPT//\{\{diff\}\}/$DIFF}" > final_prompt.txt
-
-      - name: Generate summary with Aider
+      - name: Run Aider to edit files
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AIDER_MODEL: gpt-3.5-turbo
         run: |
           aider --no-gitignore --message-file final_prompt.txt > summary.txt
-
-      - name: Post summary as PR comment
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body-path: summary.txt
