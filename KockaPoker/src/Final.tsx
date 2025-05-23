@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Paper, Button } from '@mui/material';
+import { Container, Typography, Paper, Button, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import './Final.less';
 
 const Final: React.FC = () => {
   const [playerScores, setPlayerScores] = useState<{ [key: string]: number[] }>({});
+  const [comment, setComment] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,6 +16,10 @@ const Final: React.FC = () => {
   const handleNewGame = () => {
     localStorage.clear();
     navigate('/home');
+  };
+
+  const handlePrintComment = () => {
+    console.log(comment);
   };
 
   return (
@@ -50,6 +55,16 @@ const Final: React.FC = () => {
           </tbody>
         </table>
       </Paper>
+      <TextField
+        label="Comment"
+        variant="outlined"
+        fullWidth
+        value={comment}
+        onChange={(event) => setComment(event.target.value)}
+      />
+      <Button variant="contained" color="primary" onClick={handlePrintComment} className="print-comment-button">
+        Print Comment
+      </Button>
       <Button variant="contained" color="primary" onClick={handleNewGame} className="new-game-button">
         New Game
       </Button>
