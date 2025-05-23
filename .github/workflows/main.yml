@@ -46,12 +46,20 @@ jobs:
           git commit -m "🔧 Aider válasz az issue alapján: #${{ github.event.issue.number }}"
           git push origin HEAD
 
-      - name: Comment on the issue (optional)
+      - name: Capture git diff for comment
+        run: |
+          git diff HEAD~1 HEAD > diff.txt
+
+      - name: Comment on the issue with changes
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            ✅ Aider feldolgozta az alábbi promptot, és commitolta a változásokat:
+            Aider feldolgozta az alábbi promptot, és commitolta a változásokat:
+
+            **Változások:**
             ```
-            ${{ github.event.issue.body }}
+            ${{ steps.capture_diff.outputs.diff }}
+            ```
+
